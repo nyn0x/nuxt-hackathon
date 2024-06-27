@@ -12,5 +12,8 @@
   "dependencies": {
     "@picocss/pico": "^2.0.6",
     "nuxt": "^3.12.2"
+  },
+  "devDependencies": {
+    "sass": "^1.77.6"
   }
 }
