@@ -11,6 +11,7 @@ export default defineEventHandler(async (event) => {
     body: { criteres: body.msg}
   });
 
+  const test = `${response.texte} <a href="${response.bilan}">${response.bilan}</a>`
   return response;
 
   // return Date.now().toString();
