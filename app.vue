@@ -8,15 +8,68 @@ interface Message {
   isLoadingReponse: boolean;
 }
 
+interface Conversation {
+  id: number;
+  clientName: string;
+  lastMessage: string;
+}
+
+const conversations = ref<Conversation[]>([
+  {
+    id: 1,
+    clientName: 'Client aze',
+    lastMessage: 'test'
+  },
+  {
+    id: 2,
+    clientName: 'Client qsd',
+    lastMessage: 'test'
+  },
+  {
+    id: 3,
+    clientName: 'Client tyu',
+    lastMessage: 'test'
+  },
+])
+
+
 const message = ref<string>('')
 const messages = ref<Message[]>([])
+const conversation = ref(null);
+const selectedConv = ref<number | null>(null);
 
-const addMessage = () => {
+const addMessage = async () => {
   if (message.value.trim()) {
+    const msg = message.value;
     messages.value.push({ value: message.value, reponse: Date.now().toString(), isLoadingReponse: true })
     message.value = ''
+
+    const todo = await $fetch('/api/getData', { criteres: msg })
+
+    console.log('todo', todo)
+
+    scrollToBottom();
   }
 }
+
+const scrollToBottom = () => {
+  nextTick(() => {
+    if (conversation.value) {
+      console.log('hii', conversation.value.scrollHeight);
+      setTimeout(() => {
+        conversation.value.scrollTop = conversation.value.scrollHeight;
+      }, 500);
+      // document.querySelector('#conversation').scrollTop =  conversation.value.scrollHeight;
+    }
+  });
+};
+
+onMounted(() => {
+  scrollToBottom();
+  selectedConv.value = conversations.value[0].id;
+
+});
+
 </script>
 
 <template>
@@ -25,9 +78,18 @@ const addMessage = () => {
 
     <div class="app">
       <div class="sidebar">
-        <div class="sidebar__title">Client</div>
-        <div class="sidebar__content">
+        <div class="sidebar__title">
 
+        </div>
+        <nav>
+          <ul>
+            <li>test</li>
+          </ul>
+        </nav>
+        <div class="sidebar__content">
+          <article v-for="(conversation, index) in conversations" :key="index" class="sidebar__content__conversation" :class="{ 'sidebar__content__conversation--selected' : selectedConv === conversation.id }">
+            {{ conversation.clientName }}
+          </article>
         </div>
         <!-- <span class="sidebar__icon-close">icon</span> -->
       </div>
@@ -38,17 +100,17 @@ const addMessage = () => {
             <li><img class="logo" src="assets/logo.jpg" /></li>
           </ul>
 
-          <ul>
+          <!-- <ul>
             <li>
               <span class="icon-user material-symbols-outlined">
                 account_circle
               </span>
             </li>
-          </ul>
+          </ul> -->
         </nav>
 
         <main class="main container">
-          <div class="conversation">
+          <div ref="conversation" id="conversation" class="conversation">
             <article v-for="(msg, index) in messages" :key="index" class="card">{{ msg.value }}
               <article class="card__reponse">
                 <img v-if="msg.isLoadingReponse" class="card__reponse__icon-loading" src="assets/loading.gif">
@@ -63,11 +125,11 @@ const addMessage = () => {
           <form @submit.prevent="addMessage" class="form container">
             <fieldset role="group">
               <input v-model="message" type="text" name="email" placeholder="Tapez un message" />
-              <span class="icon-talk-wrapper">
+              <!-- <span class="icon-talk-wrapper">
                 <span class="icon-talk material-symbols-outlined">
                   mic
                 </span>
-              </span>
+              </span> -->
               <input type="submit" value="Envoyer" />
             </fieldset>
           </form>
@@ -114,6 +176,16 @@ body {
     top: 40%;
     cursor: pointer;
     padding: 1rem;
+  }
+
+  &__content {
+    &__conversation {
+      cursor: pointer;
+
+      &--selected {
+        border: 1px solid var(--pico-primary-focus);
+      }
+    }
   }
 }
 
