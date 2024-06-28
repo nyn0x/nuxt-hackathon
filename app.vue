@@ -87,11 +87,11 @@ onMounted(() => {
         <div class="sidebar__title">
 
         </div>
-        <nav>
+        <!-- <nav>
           <ul>
             <li>test</li>
           </ul>
-        </nav>
+        </nav> -->
         <div class="sidebar__content">
           <article v-for="(conversation, index) in conversations" :key="index" class="sidebar__content__conversation" :class="{ 'sidebar__content__conversation--selected' : selectedConv === conversation.id }">
             {{ conversation.clientName }}
@@ -103,7 +103,7 @@ onMounted(() => {
       <div class="main-wrapper">
         <nav>
           <ul class="logo-wrapper">
-            <li><img class="logo" src="assets/logo.jpg" /></li>
+            <li><img class="logo" src="assets/logo.png" /></li>
           </ul>
 
           <!-- <ul>
