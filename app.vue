@@ -122,7 +122,7 @@ onMounted(() => {
               <article class="card__reponse">
                 <img v-if="msg.isLoadingReponse" class="card__reponse__icon-loading" src="assets/loading.gif">
                 <template v-else>
-                  {{ msg.reponse }}
+                  <div v-html="msg.reponse"></div>
                 </template>
               </article>
             </article>
