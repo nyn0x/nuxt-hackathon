@@ -48,14 +48,17 @@ const addMessage = () => {
         </nav>
 
         <main class="main container">
-          <article v-for="(msg, index) in messages" :key="index" class="card">{{ msg.value }}
-            <article class="card__reponse">
-              <img v-if="msg.isLoadingReponse" class="card__reponse__icon-loading" src="assets/loading.gif">
-              <template v-else>
-                {{ msg.reponse }}
-              </template>
+          <div class="conversation">
+            <article v-for="(msg, index) in messages" :key="index" class="card">{{ msg.value }}
+              <article class="card__reponse">
+                <img v-if="msg.isLoadingReponse" class="card__reponse__icon-loading" src="assets/loading.gif">
+                <template v-else>
+                  {{ msg.reponse }}
+                </template>
+              </article>
             </article>
-          </article>
+          </div>
+
 
           <form @submit.prevent="addMessage" class="form container">
             <fieldset role="group">
@@ -112,6 +115,13 @@ body {
     cursor: pointer;
     padding: 1rem;
   }
+}
+
+.conversation {
+  display: flex;
+  flex-direction: column;
+  max-height: 605px;
+  overflow-y: auto;
 }
 
 .card {
