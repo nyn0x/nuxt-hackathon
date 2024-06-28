@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
   });
 
   const test = `${response.texte} <a href="${response.bilan}">${response.bilan}</a>`
-  return response;
+  return test;
 
   // return Date.now().toString();
 });
