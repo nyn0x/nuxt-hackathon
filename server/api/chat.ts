@@ -10,8 +10,8 @@ export default defineEventHandler(async (event) => {
     method: 'POST',
     body: { criteres: body.msg}
   });
-console.log()
-  // const test = `${response.texte} <a href="${response.bilan}">${response.bilan}</a>`
+// console.log()
+  const test = `${response.texte} <a href="${response.bilan}">${response.bilan}</a>`
   return response;
 
   // return Date.now().toString();
