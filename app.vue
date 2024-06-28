@@ -1,114 +1,174 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
+// Définir le type pour un message
+interface Message {
+  value: string;
+  reponse?: string;
+  isLoadingReponse: boolean;
+}
+
 const message = ref<string>('')
-const messages = ref<string[]>([])
-
-const gifs = ref<string[]>([])
-
-const activeChinchilla = false;
-
-// Tableau des URLs de GIFs de chinchilla
-const chinchillaGifs = [
-  'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcHEycDdneGVkYjcyMnR5YzYwY3F1YWFzYWUxZ3pvNXE1ejZpZHI0NyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/NLIPqilkyziF2/giphy.gif',
-  'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExc21ueGh2N2NwN3UyMW9tdDF5dmF5MzVuMzM0YjhkczFxaDU3djU5NiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Z2l5ZTJmpqbNS/200.webp',
-  'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZDB4dHA0bjZnOG5xMjRpdDR6cng2bXZnNGZ3bGxxdG1pMjNlY2wxNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/12AXjGUytmBkeQ/200.webp',
-]
+const messages = ref<Message[]>([])
 
 const addMessage = () => {
   if (message.value.trim()) {
-    messages.value.push(message.value)
+    messages.value.push({ value: message.value, reponse: Date.now().toString(), isLoadingReponse: true })
     message.value = ''
-
-    // Sélectionner un GIF aléatoire
-    if (activeChinchilla) {
-      const randomGif = chinchillaGifs[Math.floor(Math.random() * chinchillaGifs.length)]
-      gifs.value.push(randomGif)
-    }
   }
-}
-
-const getRandomPosition = () => {
-  const position = {
-    left: `${Math.random() * 80}vw`,
-    top: `${Math.random() * 80}vh`,
-  }
-  return position
-}
-
-const setDisappearTimeout = (index: number) => {
-  setTimeout(() => {
-    // gifs.value.splice(index, 1)
-  }, 2000)
 }
 </script>
 
 <template>
   <div>
-    <main class="app">
-      <div class="container">
-        <article v-for="(msg, index) in messages" :key="index" class="app__card">{{ msg }}</article>
 
-        <form @submit.prevent="addMessage" class="app__form">
-          <fieldset role="group">
-            <input v-model="message" type="text" name="email" placeholder="Tapez un message" autocomplete="email" />
 
-            <input type="submit" value="Envoyer" />
-          </fieldset>
-        </form>
+    <div class="app">
+      <div class="sidebar">
+        <div class="sidebar__title">Client</div>
+        <div class="sidebar__content">
 
-        <!-- <ul> -->
-        <!-- <span v-for="(msg, index) in messages" :key="index"> -->
-        <!-- <img v-if="gifs[index]" :src="gifs[index]" alt="Chinchilla GIF" class="chinchilla-gif" /> -->
-        <!-- </span> -->
-        <!-- </ul> -->
-
-        <div class="gif-container">
-          <img v-for="(gif, index) in gifs" :key="index" :src="gif" alt="Chinchilla GIF" :style="getRandomPosition()"
-            class="chinchilla-gif" @load="setDisappearTimeout(index)" />
         </div>
+        <!-- <span class="sidebar__icon-close">icon</span> -->
       </div>
-    </main>
+
+      <div class="main-wrapper">
+        <nav>
+          <ul class="logo-wrapper">
+            <li><img class="logo" src="assets/logo.jpg" /></li>
+          </ul>
+
+          <ul>
+            <li>
+              <span class="icon-user material-symbols-outlined">
+                account_circle
+              </span>
+            </li>
+          </ul>
+        </nav>
+
+        <main class="main container">
+          <article v-for="(msg, index) in messages" :key="index" class="card">{{ msg.value }}
+            <article class="card__reponse">
+              <img v-if="msg.isLoadingReponse" class="card__reponse__icon-loading" src="assets/loading.gif">
+              <template v-else>
+                {{ msg.reponse }}
+              </template>
+            </article>
+          </article>
+
+          <form @submit.prevent="addMessage" class="form container">
+            <fieldset role="group">
+              <input v-model="message" type="text" name="email" placeholder="Tapez un message" />
+              <span class="icon-talk-wrapper">
+                <span class="icon-talk material-symbols-outlined">
+                  mic
+                </span>
+              </span>
+              <input type="submit" value="Envoyer" />
+            </fieldset>
+          </form>
+
+        </main>
+      </div>
+
+    </div>
   </div>
 </template>
 
 
-<style lang="scss">
-@import url("~/assets/css/app.css");
-
+<style lang="scss" scoped>
 body {
   background-color: #f0f0f0;
-  /* Couleur de fond pour mieux voir le centrage */
-}
-
-.app {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
   /* 100% de la hauteur de la vue */
   margin: 0;
-  /* Enlever les marges par défaut */
-  background-color: #f0f0f0;
-  /* Couleur de fond pour mieux voir le centrage */
+
+  --pico-background-color: var(--pico-form-element-background-color);
+  --pico-border-color: var(--pico-form-element-border-color);
+  --pico-color: var(--pico-form-element-color);
 }
 
 .app {
   display: flex;
-  flex-direction: column;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
 
-  &__form {
-    width: 100%;
+.sidebar {
+  border: var(--pico-border-width) solid var(--pico-form-element-border-color);
+  padding: 0.5rem;
+  width: 320px;
+  position: relative;
+
+  &__title {
+    text-align: center;
+  }
+
+  &__icon-close {
+    position: absolute;
+    right: -45px;
+    top: 40%;
+    cursor: pointer;
+    padding: 1rem;
   }
 }
 
-.chinchilla-gif {
+.card {
+  &__reponse {
+    margin-top: 2rem;
+
+    &__icon-loading {
+      width: 135px;
+      margin-left: auto;
+      display: block;
+    }
+  }
+}
+
+.logo-wrapper {
+  margin: auto;
+}
+
+.main-wrapper {
+  width: 100%;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.form {
+  width: 100%;
+  align-self: flex-end;
   position: absolute;
-  max-width: 100px;
-  /* Taille des GIFs ajustée pour la démo */
-  height: auto;
-  border-radius: 4px;
-  transition: opacity 0.3s ease-in-out;
-  /* Transition pour une disparition en douceur */
+  bottom: 0;
+  padding: 0.5rem;
+}
+
+.icon-user {
+  font-size: 42px;
+  cursor: pointer;
+}
+
+.logo {
+  width: 115px;
+}
+
+.icon-talk-wrapper {
+  border: var(--pico-border-width) solid var(--pico-form-element-border-color);
+  border-radius: 0;
+  border-left-width: 0px;
+  display: flex;
+  align-items: center;
+  width: 55px;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.icon-talk {
+  font: 24px;
 }
 </style>
