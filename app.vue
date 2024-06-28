@@ -44,9 +44,15 @@ const addMessage = async () => {
     messages.value.push({ value: message.value, reponse: Date.now().toString(), isLoadingReponse: true })
     message.value = ''
 
-    const todo = await $fetch('/api/getData', { criteres: msg })
+    const reponseChat = await $fetch('/api/chat', {  method: 'POST' , body: { 
+      msg: msg 
+        }})
 
-    console.log('todo', todo)
+    let lastMsg = messages.value[messages.value.length - 1];
+
+    lastMsg = { ...lastMsg, isLoadingReponse: false, reponse : reponseChat };
+
+    messages.value[messages.value.length - 1] = lastMsg;
 
     scrollToBottom();
   }
@@ -199,6 +205,7 @@ body {
 .card {
   &__reponse {
     margin-top: 2rem;
+    text-align: right;
 
     &__icon-loading {
       width: 135px;
