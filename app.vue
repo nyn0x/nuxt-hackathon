@@ -18,17 +18,17 @@ const conversations = ref<Conversation[]>([
   {
     id: 1,
     clientName: 'Client aze',
-    lastMessage: 'test'
+    lastMessage: ''
   },
   {
     id: 2,
     clientName: 'Client qsd',
-    lastMessage: 'test'
+    lastMessage: 'vel hen...'
   },
   {
     id: 3,
     clientName: 'Client tyu',
-    lastMessage: 'test'
+    lastMessage: 'istique lacus massa...'
   },
 ])
 
@@ -95,6 +95,7 @@ onMounted(() => {
         <div class="sidebar__content">
           <article v-for="(conversation, index) in conversations" :key="index" class="sidebar__content__conversation" :class="{ 'sidebar__content__conversation--selected' : selectedConv === conversation.id }">
             {{ conversation.clientName }}
+            <div><small>{{ conversation.lastMessage }}</small></div>
           </article>
         </div>
         <!-- <span class="sidebar__icon-close">icon</span> -->
